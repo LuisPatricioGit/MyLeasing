@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyLeasing.Common.Data;
 using MyLeasing.Common.Data.Entities;
+using MyLeasing.Common.Helpers;
 using System;
 
 namespace MyLeasing.Web
@@ -41,6 +42,7 @@ namespace MyLeasing.Web
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddTransient<SeedDb>();
+            services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<IOwnerRepository, OwnerRepository>();
 
             services.AddControllersWithViews();
@@ -64,6 +66,7 @@ namespace MyLeasing.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MyLeasing.Common.Data.Entities;
+using MyLeasing.Common.Helpers;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,21 +10,22 @@ namespace MyLeasing.Common.Data
     public class SeedDb
     {
         private readonly DataContext _context;
-        private readonly UserManager<User> _userManager;
+        public IUserHelper _userHelper;
         private Random _random;
 
-        public SeedDb(DataContext context, UserManager<User> userManager)
+        public SeedDb(DataContext context, IUserHelper userHelper)
         {
             _context = context;
-            _userManager = userManager;
+            _userHelper = userHelper;
             _random = new Random();
         }
+
 
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
 
-            var user = await _userManager.FindByEmailAsync("luispatricio.info@gmail.com");
+            var user = await _userHelper.GetUserByEmailAsync("luispatricio.info@gmail.com");
             if (user == null)
             {
                 user = new User
@@ -36,7 +38,7 @@ namespace MyLeasing.Common.Data
                     PhoneNumber = "123456789",
                 };
 
-                var result = await _userManager.CreateAsync(user, "123456");
+                var result = await _userHelper.AddUserAsync(user, "123456");
                 if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the user in seeder");
@@ -89,7 +91,7 @@ namespace MyLeasing.Common.Data
                 PhoneNumber = _random.Next(100000000, 999999999).ToString()
             };
 
-            var result = await _userManager.CreateAsync(user, "123456");
+            var result = await _userHelper.AddUserAsync(user, "123456");
             if (result != IdentityResult.Success)
             {
                 throw new InvalidOperationException("Could not create the user in seeder");
