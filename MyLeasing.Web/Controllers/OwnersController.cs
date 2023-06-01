@@ -8,28 +8,28 @@ namespace MyLeasing.Web.Controllers
 {
     public class OwnersController : Controller
     {
-        private readonly IRepository _repository;
+        private readonly IOwnerRepository _ownerRepository;
 
-        public OwnersController(IRepository repository)
+        public OwnersController(IOwnerRepository ownerRepository)
         {
-            _repository = repository;
+            _ownerRepository = ownerRepository;
         }
 
         // GET: Owners
         public IActionResult Index()
         {
-            return View(_repository.GetOwners());
+            return View(_ownerRepository.GetAll());
         }
 
         // GET: Owners/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var owner = _repository.GetOwner(id.Value);
+            var owner = await _ownerRepository.GetByIdAsync(id.Value);
             if (owner == null)
             {
                 return NotFound();
@@ -53,22 +53,21 @@ namespace MyLeasing.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _repository.AddOwner(owner);
-                await _repository.SaveAllAsync();
+                await _ownerRepository.CreateAsync(owner);
                 return RedirectToAction(nameof(Index));
             }
             return View(owner);
         }
 
         // GET: Owners/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var owner = _repository.GetOwner(id.Value);
+            var owner = await _ownerRepository.GetByIdAsync(id.Value);
             if (owner == null)
             {
                 return NotFound();
@@ -92,12 +91,11 @@ namespace MyLeasing.Web.Controllers
             {
                 try
                 {
-                    _repository.UpdateOwner(owner);
-                    await _repository.SaveAllAsync();
+                    await _ownerRepository.UpdateAsync(owner);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_repository.OwnerExists(owner.Id))
+                    if (!await _ownerRepository.ExistAsync(owner.Id))
                     {
                         return NotFound();
                     }
@@ -112,14 +110,14 @@ namespace MyLeasing.Web.Controllers
         }
 
         // GET: Owners/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var owner = _repository.GetOwner(id.Value);
+            var owner = await _ownerRepository.GetByIdAsync(id.Value);
             if (owner == null)
             {
                 return NotFound();
@@ -133,9 +131,8 @@ namespace MyLeasing.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var owner = _repository.GetOwner(id);
-            _repository.RemoveOwner(owner);
-            await _repository.SaveAllAsync();
+            var owner = await _ownerRepository.GetByIdAsync(id);
+            await _ownerRepository.DeleteAsync(owner);
             return RedirectToAction(nameof(Index));
         }
     }
