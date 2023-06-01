@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyLeasing.Web.Data.Entities
+namespace MyLeasing.Common.Data.Entities
 {
     public class Owner : IEntity
     {
@@ -8,7 +8,7 @@ namespace MyLeasing.Web.Data.Entities
 
         [Required]
         [Display(Name = "Document*")]
-        public int Document { get; set; }
+        public string Document { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -33,5 +33,7 @@ namespace MyLeasing.Web.Data.Entities
         {
             get { return $"{FirstName} {LastName}"; } 
         }
+
+        public User User { get; set; }
     }
 }

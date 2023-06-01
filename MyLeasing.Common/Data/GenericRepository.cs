@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using MyLeasing.Web.Data.Entities;
+using MyLeasing.Common.Data.Entities;
 
-namespace MyLeasing.Web.Data
+namespace MyLeasing.Common.Data
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, IEntity
     {

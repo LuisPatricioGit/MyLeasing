@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MyLeasing.Web.Migrations
+namespace MyLeasing.Common.Migrations
 {
     public partial class ModifyOwners : Migration
     {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MyLeasing.Web.Data;
+using MyLeasing.Common.Data;
 
 namespace MyLeasing.Web
 {

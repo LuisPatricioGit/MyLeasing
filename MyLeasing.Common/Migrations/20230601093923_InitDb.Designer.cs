@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyLeasing.Web.Data;
+using MyLeasing.Common.Data;
 
-namespace MyLeasing.Web.Migrations
+namespace MyLeasing.Common.Migrations
 {
     [DbContext(typeof(DataContext))]
     [Migration("20230601093923_InitDb")]

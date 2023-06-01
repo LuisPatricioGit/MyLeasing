@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyLeasing.Web.Data;
-using MyLeasing.Web.Data.Entities;
+using MyLeasing.Common.Data;
+using MyLeasing.Common.Data.Entities;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyLeasing.Web.Controllers
+namespace MyLeasing.Common.Controllers
 {
     public class OwnersController : Controller
     {
@@ -18,7 +19,7 @@ namespace MyLeasing.Web.Controllers
         // GET: Owners
         public IActionResult Index()
         {
-            return View(_ownerRepository.GetAll());
+            return View(_ownerRepository.GetAll().OrderBy(o => o.Document));
         }
 
         // GET: Owners/Details/5

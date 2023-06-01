@@ -1,6 +1,6 @@
-﻿using MyLeasing.Web.Data.Entities;
+﻿using MyLeasing.Common.Data.Entities;
 
-namespace MyLeasing.Web.Data
+namespace MyLeasing.Common.Data
 {
     public class OwnerRepository : GenericRepository<Owner>, IOwnerRepository
     {

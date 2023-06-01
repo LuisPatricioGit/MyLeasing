@@ -1,4 +1,4 @@
-﻿namespace MyLeasing.Web.Data.Entities
+﻿namespace MyLeasing.Common.Data.Entities
 {
     public interface IEntity
     {
