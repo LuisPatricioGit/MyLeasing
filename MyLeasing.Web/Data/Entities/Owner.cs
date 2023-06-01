@@ -6,12 +6,17 @@ namespace MyLeasing.Web.Data.Entities
     {
         public int Id { get; set; }
 
+        [Required]
         [Display(Name = "Document*")]
-        public string Document { get; set; }
+        public int Document { get; set; }
 
+        [Required]
+        [MaxLength(50)]
         [Display(Name = "First Name*")]
         public string FirstName { get; set; }
 
+        [Required]
+        [MaxLength(50)]
         [Display(Name = "Last Name*")]
         public string LastName { get; set; }
 
