@@ -10,8 +10,8 @@ using MyLeasing.Web.Data;
 namespace MyLeasing.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230603173857_AddImageUrl")]
-    partial class AddImageUrl
+    [Migration("20230603195941_AddLessees")]
+    partial class AddLessees
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -152,7 +152,50 @@ namespace MyLeasing.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("MyLeasing.Common.Data.Entities.Owner", b =>
+            modelBuilder.Entity("MyLeasing.Web.Data.Entities.Lessee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CellPhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Document")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("FixedPhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Lessees");
+                });
+
+            modelBuilder.Entity("MyLeasing.Web.Data.Entities.Owner", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -195,7 +238,7 @@ namespace MyLeasing.Web.Migrations
                     b.ToTable("Owners");
                 });
 
-            modelBuilder.Entity("MyLeasing.Common.Data.Entities.User", b =>
+            modelBuilder.Entity("MyLeasing.Web.Data.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -290,7 +333,7 @@ namespace MyLeasing.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MyLeasing.Common.Data.Entities.User", null)
+                    b.HasOne("MyLeasing.Web.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -299,7 +342,7 @@ namespace MyLeasing.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MyLeasing.Common.Data.Entities.User", null)
+                    b.HasOne("MyLeasing.Web.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -314,7 +357,7 @@ namespace MyLeasing.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyLeasing.Common.Data.Entities.User", null)
+                    b.HasOne("MyLeasing.Web.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -323,16 +366,25 @@ namespace MyLeasing.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MyLeasing.Common.Data.Entities.User", null)
+                    b.HasOne("MyLeasing.Web.Data.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyLeasing.Common.Data.Entities.Owner", b =>
+            modelBuilder.Entity("MyLeasing.Web.Data.Entities.Lessee", b =>
                 {
-                    b.HasOne("MyLeasing.Common.Data.Entities.User", "User")
+                    b.HasOne("MyLeasing.Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyLeasing.Web.Data.Entities.Owner", b =>
+                {
+                    b.HasOne("MyLeasing.Web.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 

@@ -1,10 +1,10 @@
-﻿@model IEnumerable<MyLeasing.Web.Data.Entities.Owner>
+﻿@model IEnumerable<MyLeasing.Web.Data.Entities.Lessee>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Owners</h1>
+<h1>Index</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-success">Create New</a>
@@ -40,10 +40,10 @@
                 @Html.DisplayFor(modelItem => item.Document)
             </td>
             <td>
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                    {
-                        <img src="@Url.Content(item.ImageUrl)" alt="Image" style="width:100px; height:150px; max-width:100%; height:auto">
-                    }
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@Url.Content(item.ImageUrl)" alt="Image" style="width:100px; height:150px; max-width:100%; height:auto">
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FullName)
@@ -58,9 +58,9 @@
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a> 
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a> 
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a> 
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a> 
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
             </td>
         </tr>
 }

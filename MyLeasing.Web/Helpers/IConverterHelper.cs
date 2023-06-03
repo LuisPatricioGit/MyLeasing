@@ -10,5 +10,9 @@ namespace MyLeasing.Web.Helpers
 
         OwnerViewModel ToOwnerViewModel(Owner model);
 
+        Lessee ToLessee(LesseeViewModel model, string path, bool isNew);
+
+        LesseeViewModel ToLesseeViewModel(Lessee model);
+
     }
 }
