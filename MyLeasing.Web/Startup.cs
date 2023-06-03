@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MyLeasing.Common.Data;
-using MyLeasing.Common.Data.Entities;
-using MyLeasing.Common.Helpers;
-using System;
+using MyLeasing.Web.Data;
+using MyLeasing.Web.Data.Entities;
+using MyLeasing.Web.Helpers;
 
 namespace MyLeasing.Web
 {
@@ -43,6 +42,9 @@ namespace MyLeasing.Web
             });
             services.AddTransient<SeedDb>();
             services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<IImageHelper, ImageHelper>();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
+
             services.AddScoped<IOwnerRepository, OwnerRepository>();
 
             services.AddControllersWithViews();

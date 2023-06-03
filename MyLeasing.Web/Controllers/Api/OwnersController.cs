@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyLeasing.Common.Data;
+using MyLeasing.Web.Data;
 
 namespace MyLeasing.Web.Controllers.Api
 {

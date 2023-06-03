@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MyLeasing.Common.Data.Entities;
+using MyLeasing.Web.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyLeasing.Web.Models

@@ -1,25 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyLeasing.Common.Data;
-using MyLeasing.Common.Data.Entities;
-using MyLeasing.Common.Helpers;
+using MyLeasing.Web.Data;
+using MyLeasing.Web.Data.Entities;
+using MyLeasing.Web.Helpers;
 using MyLeasing.Web.Models;
-using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MyLeasing.Common.Controllers
+namespace MyLeasing.Web.Controllers
 {
     public class OwnersController : Controller
     {
         private readonly IOwnerRepository _ownerRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
-        public OwnersController(IOwnerRepository ownerRepository, IUserHelper userHelper)
+        public OwnersController(
+            IOwnerRepository ownerRepository,
+            IUserHelper userHelper,
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {
             _ownerRepository = ownerRepository;
             _userHelper = userHelper;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Owners
@@ -64,44 +70,15 @@ namespace MyLeasing.Common.Controllers
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    var guid = Guid.NewGuid().ToString();
-                    var file = $"{guid}.jpg";
-
-                    path = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot\\images\\owners",
-                        file);
-
-                    using (var stream = new FileStream (path, FileMode.Create))
-                    {
-                        await model.ImageFile.CopyToAsync (stream);
-                    }
-
-                    path = $"~/images/owner/{file}";
+                    path = await _imageHelper.UploadImageAsync(model.ImageFile, "owners");
                 }
 
-                var owner = this.ToOwner(model, path);
-
+                var owner = _converterHelper.ToOwner(model, path, true);
                 owner.User = await _userHelper.GetUserByEmailAsync("luispatricio.info@gmail.com");
                 await _ownerRepository.CreateAsync(owner);
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
-        }
-
-        private Owner ToOwner(OwnerViewModel model, string path)
-        {
-            return new Owner
-            {
-                Id = model.Id,
-                Document = model.Document,
-                ImageUrl = path,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                FixedPhone = model.FixedPhone,
-                CellPhone = model.CellPhone,
-                Address = model.Address,
-                User = model.User
-            };
         }
 
         // GET: Owners/Edit/5
@@ -117,24 +94,8 @@ namespace MyLeasing.Common.Controllers
             {
                 return NotFound();
             }
-            var model = this.ToOwnerViewModel(owner);
+            var model = _converterHelper.ToOwnerViewModel(owner);
             return View(model);
-        }
-
-        private OwnerViewModel ToOwnerViewModel(Owner owner)
-        {
-            return new OwnerViewModel
-            {
-                Id= owner.Id,
-                Document = owner.Document,
-                ImageUrl = owner.ImageUrl,
-                FirstName = owner.FirstName,
-                LastName = owner.LastName,
-                FixedPhone = owner.FixedPhone,
-                CellPhone = owner.CellPhone,
-                Address = owner.Address,
-                User = owner.User
-            };
         }
 
         // POST: Owners/Edit/5
@@ -152,23 +113,10 @@ namespace MyLeasing.Common.Controllers
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
-                        var guid = Guid.NewGuid().ToString();
-                        var file = $"{guid}.jpg";
-
-                        path = Path.Combine(
-                            Directory.GetCurrentDirectory(),
-                            "wwwroot\\images\\owners",
-                            file);
-
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageFile.CopyToAsync(stream);
-                        }
-
-                        path = $"~/images/owners/{file}";
+                        path = await _imageHelper.UploadImageAsync(model.ImageFile, "owners");
                     }
 
-                    var owner = this.ToOwner(model, path);
+                    var owner = _converterHelper.ToOwner(model, path, false);
 
                     owner.User = await _userHelper.GetUserByEmailAsync("luispatricio.info@gmail.com");
                     await _ownerRepository.UpdateAsync(owner);
