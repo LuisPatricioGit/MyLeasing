@@ -10,6 +10,9 @@ namespace MyLeasing.Common.Data.Entities
         [Display(Name = "Document*")]
         public string Document { get; set; }
 
+        [Display(Name = "Image")]
+        public string ImageUrl { get; set; }
+
         [Required]
         [MaxLength(50)]
         [Display(Name = "First Name*")]
@@ -35,5 +38,17 @@ namespace MyLeasing.Common.Data.Entities
         }
 
         public User User { get; set; }
+
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ImageUrl))
+                {
+                    return null;
+                }
+                return $"https://localhost:44355{ImageUrl.Substring(1)}";
+            }
+        }
     }
 }

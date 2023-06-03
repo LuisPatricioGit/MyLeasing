@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using MyLeasing.Common.Data;
 using MyLeasing.Common.Data.Entities;
 using MyLeasing.Common.Helpers;
+using MyLeasing.Web.Models;
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -53,15 +56,52 @@ namespace MyLeasing.Common.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Owner owner)
+        public async Task<IActionResult> Create(OwnerViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var path = string.Empty;
+
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}.jpg";
+
+                    path = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot\\images\\owners",
+                        file);
+
+                    using (var stream = new FileStream (path, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync (stream);
+                    }
+
+                    path = $"~/images/owner/{file}";
+                }
+
+                var owner = this.ToOwner(model, path);
+
                 owner.User = await _userHelper.GetUserByEmailAsync("luispatricio.info@gmail.com");
                 await _ownerRepository.CreateAsync(owner);
                 return RedirectToAction(nameof(Index));
             }
-            return View(owner);
+            return View(model);
+        }
+
+        private Owner ToOwner(OwnerViewModel model, string path)
+        {
+            return new Owner
+            {
+                Id = model.Id,
+                Document = model.Document,
+                ImageUrl = path,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                FixedPhone = model.FixedPhone,
+                CellPhone = model.CellPhone,
+                Address = model.Address,
+                User = model.User
+            };
         }
 
         // GET: Owners/Edit/5
@@ -77,7 +117,24 @@ namespace MyLeasing.Common.Controllers
             {
                 return NotFound();
             }
-            return View(owner);
+            var model = this.ToOwnerViewModel(owner);
+            return View(model);
+        }
+
+        private OwnerViewModel ToOwnerViewModel(Owner owner)
+        {
+            return new OwnerViewModel
+            {
+                Id= owner.Id,
+                Document = owner.Document,
+                ImageUrl = owner.ImageUrl,
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                FixedPhone = owner.FixedPhone,
+                CellPhone = owner.CellPhone,
+                Address = owner.Address,
+                User = owner.User
+            };
         }
 
         // POST: Owners/Edit/5
@@ -85,23 +142,40 @@ namespace MyLeasing.Common.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Owner owner)
+        public async Task<IActionResult> Edit(OwnerViewModel model)
         {
-            if (id != owner.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var path = model.ImageUrl;
+
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        var guid = Guid.NewGuid().ToString();
+                        var file = $"{guid}.jpg";
+
+                        path = Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "wwwroot\\images\\owners",
+                            file);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await model.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/owners/{file}";
+                    }
+
+                    var owner = this.ToOwner(model, path);
+
                     owner.User = await _userHelper.GetUserByEmailAsync("luispatricio.info@gmail.com");
                     await _ownerRepository.UpdateAsync(owner);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _ownerRepository.ExistAsync(owner.Id))
+                    if (!await _ownerRepository.ExistAsync(model.Id))
                     {
                         return NotFound();
                     }
@@ -112,7 +186,7 @@ namespace MyLeasing.Common.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(owner);
+            return View(model);
         }
 
         // GET: Owners/Delete/5
